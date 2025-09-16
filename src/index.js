@@ -32,7 +32,7 @@ bot.on("clientReady",(c) => {
 cargarGrupos()
 
 bot.on("messageCreate", (mensaje)=>{
-    if (mensaje.content.bot){
+    if (mensaje.content.bot|| !mensaje.content.startsWith("$") ){
         return;
     }
     const contenidoDeMensaje = mensaje.content.toLowerCase()
