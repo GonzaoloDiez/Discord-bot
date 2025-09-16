@@ -13,13 +13,13 @@ const bot = new Client({
 })
 
 function helpMessage() {
-    return `
+    return `@silent
 📜 **Comandos del bot:**
 
 - \`$<nombre_del_grupo>\` → Invoca al grupo y menciona a sus integrantes
 - \`$showgroups\` → Muestra todos los grupos y sus integrantes
 - \`$makegroup-<nombre_del_grupo>\` → Crea un nuevo grupo
-- \`$sub-<nombre_del_grupo>\` → Te suscribe a un grupo existente
+- \`$sub/unsub-<nombre_del_grupo>\` → Te suscribe/desuscribe a un grupo existente
 Ejemplo:
 \`$cs\` → Llama al grupo cs
 \`$sub-vengadores\` → Te suscribes al grupo Vengadores
@@ -42,35 +42,35 @@ bot.on("messageCreate", (mensaje)=>{
 
 function atenderPedidos(mensaje,author,contenidoDeMensaje){
     const idAutor = author.id;
-    if (contenidoDeMensaje === "$help") return mensaje.reply(helpMesage());
+    if (contenidoDeMensaje === "$help") return mensaje.reply(helpMessage());
     if (contenidoDeMensaje.startsWith("$sub-")) {
         const grupo = mensaje.content.split("-")[1].toLowerCase();
-        if (!grupo) return mensaje.reply("⚠️ Tenés que poner un grupo.");
+        if (!grupo) return mensaje.reply("@silent ⚠️ Tenés que poner un grupo.");
         if (!gruposHas(grupo))  return mensaje.reply(`no existe tal crupo`);
         if (!idIsInGrupo(grupo,idAutor)) {
             subscribirGrupo(grupo,author);
-           return  mensaje.reply(`✅ Estas en el grupo **${grupo}**`);
+           return  mensaje.reply(`@silent ✅ Estas en el grupo **${grupo}**`);
         } 
         else {
-            return mensaje.reply(`Ya estabas en el grupo **${grupo}**`);
+            return mensaje.reply(`@silent Ya estabas en el grupo **${grupo}**`);
         }
     }
     if (contenidoDeMensaje.startsWith("$unsub-")) {
         const grupo = mensaje.content.split("-")[1].toLowerCase();
-        if (!grupo) return mensaje.reply("⚠️ Tenés que poner un grupo.");
-        if (!gruposHas(grupo))  return mensaje.reply(`no existe tal crupo`);
+        if (!grupo) return mensaje.reply("@silent ⚠️ Tenés que poner un grupo.");
+        if (!gruposHas(grupo))  return mensaje.reply(`@silent no existe tal grupo`);
         if (idIsInGrupo(grupo,idAutor)) {
             desubscribirGrupo(grupo,author);
-           return  mensaje.reply(`Saliste del grupo **${grupo}**`);
+           return  mensaje.reply(`@silent Saliste del grupo **${grupo}**`);
         }
     }
     if (contenidoDeMensaje.startsWith("$makegroup-")) {
         const grupo = contenidoDeMensaje.split("-")[1].toLowerCase();
-        if (!grupo) return mensaje.reply("⚠️ Tenés que poner un grupo.");
-        if (gruposHas(grupo)) return  mensaje.reply(`Ya existe ${grupo}`);
+        if (!grupo) return mensaje.reply("@silent ⚠️ Tenés que poner un grupo.");
+        if (gruposHas(grupo)) return  mensaje.reply(`@silent Ya existe ${grupo}`);
         else {
             crearGrupoNuevo(grupo)
-           return  mensaje.reply(`Creado el grupo **${grupo}**`);
+           return  mensaje.reply(`@silent Creado el grupo **${grupo}**`);
         }
     }
     if (contenidoDeMensaje.startsWith("$showgroups")) {
@@ -79,7 +79,7 @@ function atenderPedidos(mensaje,author,contenidoDeMensaje){
     else { 
         if (contenidoDeMensaje.startsWith("$")){
             const grupo = contenidoDeMensaje.slice(1)
-            if (!gruposHas(grupo)) return mensaje.reply(`no existe el grupo ${grupo} o no entendi el comando`);
+            if (!gruposHas(grupo)) return mensaje.reply(`@silent no existe el grupo ${grupo} o no entendi el comando`);
             const grupos = getGrupos() 
             const menciones = grupos[grupo].map(autor => `<@${autor.id}>`).join(" ");
             return mensaje.channel.send(`Sale ${grupo}? ${menciones}`);

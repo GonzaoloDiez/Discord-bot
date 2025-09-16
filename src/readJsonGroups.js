@@ -34,7 +34,7 @@ function idIsInGrupo(grupo,id){
   return aux;
 }
 function showGrupos(){
-  let msg = "Grupos:\n";
+  let msg = "@silent Grupos:\n";
         for (const [grupo, usuarios] of Object.entries(grupos)) {
             const menciones = usuarios.map(autor => `<${autor.name}>`).join(" ");
             msg += `- ${grupo}: ${menciones}\n`;
