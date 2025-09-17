@@ -12,12 +12,38 @@ function cargarGrupos() {
     grupos = {}; // si no existe, queda vacío
   }
 }
-
-// Guardar grupos en archivo
 function guardarGrupos() {
   fs.writeFileSync("grupos.json", JSON.stringify(grupos, null, 2));
 }
 
+let blockedUsers = new Set(); // inicializamos como Set
+
+function cargarBloqueados() {
+  try {
+    const data = fs.readFileSync("blockeados.json", "utf8");
+    const array = JSON.parse(data);
+    blockedUsers = new Set(array);
+  } catch (error) {
+    console.log(error); // error.stringify no existe
+  }
+}
+
+function guardarBloqueados() {
+  // Guardamos como array porque JSON no sabe serializar Set
+  fs.writeFileSync("blockeados.json", JSON.stringify([...blockedUsers], null, 2));
+}
+
+function userIsBloqued(id){
+  return blockedUsers.has(id)
+}
+function   bloquearUser(id){
+  blockedUsers.add(id)
+  guardarBloqueados()
+}
+function desbloquearUser(id){
+  blockedUsers.delete(id)
+  guardarBloqueados()
+}
 // Obtener todos los grupos
 function getGrupos() {
   return grupos;
@@ -57,12 +83,17 @@ function crearGrupoNuevo(grupo){
 module.exports = {
   crearGrupoNuevo,
   cargarGrupos,
+  cargarBloqueados,
   guardarGrupos,
+  guardarBloqueados,
   getGrupos,
   gruposHas,
   idIsInGrupo,
   subscribirGrupo,
   desubscribirGrupo,
-  showGrupos
+  showGrupos,
+  userIsBloqued,
+  bloquearUser,
+  desbloquearUser
 };
 
