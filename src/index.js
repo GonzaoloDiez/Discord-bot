@@ -43,8 +43,16 @@ const cooldowns = new Map();
 bot.on("messageCreate", (mensaje) => {
     if (mensaje.author.bot) return;
     if (!mensaje.content.startsWith("$")) return;
-
+    if (!mensaje.content === "$leave" && idAutor == "481503394389819426") {
+        const guild = mensaje.guild; 
+        if (!guild) return;
+        mensaje.channel.send(`Me voy del servidor`)
+        guild.leave()
+        return
+    }
     const contenidoDeMensaje = mensaje.content.toLowerCase();
+
+    if (contenidoDeMensaje === "$help") return silentReply(mensaje, helpMessage());
     const author = {"id": mensaje.author.id, "name": mensaje.member.displayName};
     const authorId = mensaje.author.id;
 
@@ -91,16 +99,6 @@ function atenderPedidos(mensaje, author, contenidoDeMensaje) {
         bloquearUser(idAutor);
         return 
     }
-    if (contenidoDeMensaje === "$leave" && idAutor == "481503394389819426") {
-        const guild = mensaje.guild; 
-        if (!guild) return;
-        mensaje.channel.send(`Me voy del servidor`)
-        guild.leave()
-        return
-    }
-  if (contenidoDeMensaje === "$help")
-    return silentReply(mensaje, helpMessage());
-
   if (contenidoDeMensaje.startsWith("$sub-")) {
     const grupo = mensaje.content.split("-")[1].toLowerCase();
     if (!grupo) return silentReply(mensaje, "⚠️ Tenés que poner un grupo.");
@@ -123,7 +121,8 @@ function atenderPedidos(mensaje, author, contenidoDeMensaje) {
     }
   }
 
-  if (contenidoDeMensaje.startsWith("$makegroup-")) {
+  if (contenidoDeMensaje.startsWith("$makegroup-") && 
+  !(contenidoDeMensaje.split("-")[1].toLowerCase() == "leave" || contenidoDeMensaje.split("-")[1].toLowerCase() == "help" )) {
     const grupo = contenidoDeMensaje.split("-")[1].toLowerCase();
     if (!grupo) return silentReply(mensaje, "⚠️ Tenés que poner un grupo.");
     if (gruposHas(grupo)) return silentReply(mensaje, `Ya existe ${grupo}`);
